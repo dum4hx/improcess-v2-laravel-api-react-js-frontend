@@ -46,4 +46,13 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+
+    /**
+     * Navigation method to expenses eager loading
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany<TRelatedModel, $this>
+     */
+    public function expenses()
+    {
+        return $this->hasMany(Expense::class);
+    }
 }

@@ -13,4 +13,12 @@ class AccountType extends Model
      * @var bool
      */
     public $incrementing = false;
+
+    /**
+     * Navigation method to account eager loading 
+     */
+    public function accounts()
+    {
+        return $this->hasMany(Account::class);
+    }
 }

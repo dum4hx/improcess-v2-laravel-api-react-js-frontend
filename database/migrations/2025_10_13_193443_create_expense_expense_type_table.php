@@ -11,19 +11,18 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('expenses', function (Blueprint $table) {
-            $table->uuid("id")->primary();
+        Schema::create('expense_expense_type', function (Blueprint $table) {
+            $table->uuid()->primary();
 
             // Foreign keys
-            $table->uuid("account_id");
-            $table->string("name");
+            $table->uuid("expense_id");
+            $table->uuid("expense_type_id");
 
-            // Other attributes
-            $table->decimal("amount", 10, 2);
             $table->timestamps();
 
             // Foreign key constraints
-            $table->foreign("account_id")->references("id")->on("accounts")->onDelete("cascade");
+            $table->foreign("expense_id")->references("id")->on("expenses")->onDelete("cascade");
+            $table->foreign("expense_type_id")->references("id")->on("expense_types")->onDelete("cascade");
         });
     }
 
@@ -32,6 +31,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('expenses');
+        Schema::dropIfExists('expense_expense_type');
     }
 };

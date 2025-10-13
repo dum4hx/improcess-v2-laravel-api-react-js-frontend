@@ -10,4 +10,13 @@ class Expense extends Model
     use HasUuids;
 
     public $incrementing = false;
+
+    /**
+     * Navigation method to expense_types for eager loading 
+     */
+    public function types()
+    {
+        return $this->belongsToMany(ExpenseType::class)
+            ->withTimestamps();
+    }
 }

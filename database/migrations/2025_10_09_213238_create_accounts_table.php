@@ -13,8 +13,13 @@ return new class extends Migration
     {
         Schema::create('accounts', function (Blueprint $table) {
             $table->uuid("id")->primary();
+
+            // Foreign keys
             $table->uuid("type_id");
             $table->uuid("owner_id");
+
+            // Other attributes
+            $table->string("name");
             $table->timestamps();
 
             // Define foreign key constraints
