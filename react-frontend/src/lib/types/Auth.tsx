@@ -19,11 +19,23 @@ export interface ILoginData {
     token: string;
 }
 
+export type TRegister = {
+    name: string;
+    email: string;
+    password: string;
+    phone: string;
+};
+
+export type TResourceLessResponse = {
+    message: string;
+};
+
 export interface IAuth {
     setUser: (user: TUser) => void;
     user: TUser | null;
     setTokenInMemory: (token: string) => void;
     token: TToken;
+    register: (userData: TRegister) => Promise<TResourceLessResponse>;
     login: ({
         email,
         password,

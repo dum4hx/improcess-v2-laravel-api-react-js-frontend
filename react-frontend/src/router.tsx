@@ -3,7 +3,7 @@ import DefaultLayout from "./layouts/DefaultLayout";
 import Home from "./views/customer/Home";
 import GuestLayout from "./layouts/GuestLayout";
 import Login from "./views/auth/Login";
-import Register from "./views/auth/register";
+import Register from "./views/auth/Register";
 
 const router = createBrowserRouter([
     {

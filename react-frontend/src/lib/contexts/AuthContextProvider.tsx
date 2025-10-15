@@ -3,6 +3,8 @@ import {
     type IAuth,
     type ILogin,
     type ILoginData,
+    type TRegister,
+    type TResourceLessResponse,
     type TToken,
     type TUser,
 } from "../types/Auth";
@@ -39,6 +41,30 @@ export const AuthContextProvider = ({
         } else {
             localStorage.setItem(TOKEN_NAME, token);
         }
+    };
+
+    /**
+     * Makes register request, on success returns database response
+     * @param userData
+     * @returns
+     */
+    const register = async (userData: TRegister) => {
+        const response = await fetch(Auth.register, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                Accept: "application/json",
+            },
+            body: JSON.stringify(userData),
+        });
+
+        if (!response.ok) {
+            const errorData = (await response.json()) as { message: string };
+
+            throw new Error(errorData.message);
+        }
+
+        return (await response.json()) as TResourceLessResponse;
     };
 
     const login = async ({
@@ -95,6 +121,7 @@ export const AuthContextProvider = ({
     };
 
     const AuthContextValue: IAuth = {
+        register: register,
         login: login,
         logout: logout,
         setUser: setUser,
