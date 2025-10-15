@@ -91,4 +91,15 @@ class AuthController extends Controller
         // Return success message
         return response()->json(["message" => "User registered correctly", 201]);
     }
+
+    /**
+     * Deletes personal access token related to user
+     * @param Request $request
+     */
+    public function logout(Request $request)
+    {
+        $request->user()->currentAccessToken()->delete();
+
+        return response()->json(["message" => "User logged out successfully", 200]);
+    }
 }

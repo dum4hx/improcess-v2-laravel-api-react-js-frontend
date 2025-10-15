@@ -22,10 +22,22 @@ export const AuthContextProvider = ({
 
     // Get states for user and token
     const [user, setUser] = useState<TUser>(null);
-    const [token, setToken] = useState<TToken>(
-        localStorage.getItem(TOKEN_NAME) ?? ""
+
+    // Private unsanitised function for setting token
+    const [token, _setToken] = useState<TToken>(
+        localStorage.getItem(TOKEN_NAME) ?? null
     );
 
+    /**
+     * Sanitises the token by removing conflicting characters such as "|" and calls **`_setToken`**
+     * @param {TToken} token
+     */
+    const setToken = (token: TToken) => {
+        if (token?.startsWith("|")) {
+            token = token.slice(1);
+        }
+        _setToken(token);
+    };
     /**
      * Removes local storage item when **`token`** is falsy.
      * Sets its value in local storage when truthy.
@@ -34,12 +46,15 @@ export const AuthContextProvider = ({
     const setTokenInMemory = (token: TToken) => {
         if (!token || token.trim().length === 0) {
             try {
+                // Remove token
                 localStorage.removeItem(TOKEN_NAME);
+                setToken(null);
             } catch {
                 throw new Error("Token doesn't exist.");
             }
         } else {
             localStorage.setItem(TOKEN_NAME, token);
+            setToken(token);
         }
     };
 
@@ -67,6 +82,12 @@ export const AuthContextProvider = ({
         return (await response.json()) as TResourceLessResponse;
     };
 
+    /**
+     * Makes a login request, on success returns the user data and token.
+     * @param {ILogin} data - The login data to be sent in the request body
+     * @returns {Promise<ILoginData>} - The user data and token on success
+     * @throws {Error} - If the credentials are invalid or there is an error with the request
+     */
     const login = async ({
         email,
         password,
@@ -97,27 +118,36 @@ export const AuthContextProvider = ({
         if (remember) {
             setTokenInMemory(data.token);
         }
+
         console.log(data);
     };
 
-    // Define logout function call
-    const logout = async (token: TToken) => {
+    const logout = async () => {
+        // Delete this conditional
+        if (!token) {
+            throw new Error("Token can't be empty");
+        }
+
         const response = await fetch(Auth.logout, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
+                Accept: "application/json",
                 Authorization: `Bearer ${token}`,
             },
         });
 
         if (!response.ok) {
-            throw new Error("Error while loggint out. Try again later.");
+            // Parse error response and throw the message
+            const errorData = await response.json();
+            throw new Error(errorData.message || "Logout failed");
         }
 
-        // Clear user data and token
         setUser(null);
         setToken(null);
         setTokenInMemory(null);
+
+        return response.json();
     };
 
     const AuthContextValue: IAuth = {

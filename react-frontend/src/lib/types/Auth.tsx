@@ -42,5 +42,5 @@ export interface IAuth {
         device_name,
         remember,
     }: ILogin) => Promise<void>;
-    logout: (token: TToken) => Promise<void>;
+    logout: () => Promise<void>;
 }

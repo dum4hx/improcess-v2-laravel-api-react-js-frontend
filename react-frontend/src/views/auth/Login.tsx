@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useAuth } from "../../lib/contexts/AuthContextProvider";
 import { useMutation } from "@tanstack/react-query";
+import { useNavigate } from "react-router-dom";
 
 export default function Login() {
     const [email, setEmail] = useState("");
@@ -11,7 +12,12 @@ export default function Login() {
 
     const { mutate } = useMutation({
         mutationFn: () => login({ email, password, remember }),
+        onSuccess: () => {
+            const navigate = useNavigate();
+            navigate("/home");
+        },
     });
+
     /**
      * Handles form submission by calling the mutate function from react-query.
      * Prevents default form submission behavior by calling **`e.preventDefault()`**
